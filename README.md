@@ -1,60 +1,21 @@
-# Biblioteca en Solana
-
-![banner](./images/banner-biblioteca.jpg)
-
-CRUD básico de un Solana Program desarrollado con Rust y Anchor desde el Solana Playground. 
-
-Puedes comenzar dándole Fork a este repositorio (abajo te explicamos como 👇), **hemos preparado un entorno de codespaces listo para que no tengas que instalar nada**, solo déjate llevar por la fluidez de los ejercicios y temas desarrollados especialmente para ti. 
-
-Asegúrate de clonar este repositorio a tu cuenta usando el botón **`Fork`**.
-
-![fork](./images/fork.png)
-
-## Importando el proyecto 
-
-Ya con el repositorio en tu cuenta lo siguiente que debes hacer copiar el `enlace de tu repositorio`, lo que se puede hacer directamente desdel navegador:
-
-![repo](./images/repo.png)
-Posteriormente, lo uniremos con el siguiente enlace en nuestro navegador de preferencia:
-
-```url
-https://beta.solpg.io/
-```
-
-Lo que nos dará algo parecido a:
-
-![url](./images/url.png)
-
-Al pulsar enter seremos enviados al `Solana Playground` con nuestro proyecto abierto:
-
-![pg](./images/pg.png)
-
-Para guardarlo solo damos clic en el boton `import` y asignamos un nombre:
-
-![import](./images/import.png)
-
-## Preparacion del entorno
-
-Primero conectaremos el entorno con la devnet, lo que tambien procederá a la creación de una wallet. Para eso daremos clic en donde dice **Not Conected**:
-
-![playground1](./images/playground1.png)
-
-Saldrá la siguiente ventana donde daremos en el botón **Continue**:
-
-![wallet](./images/wallet.png)
-
-Como resultado se mostrará la siguiente información:
-
-![status](./images/status.png)
-
-* En verde: el estado de la conexión y el entorno al que se encuentra conectado
-
-* En amarillo: la la dirección de la wallet conectada
-
-* En azul: la cantidad de tokens en la wallet
-
-> ℹ️ ¿Quieres ver el ejemplo de un "Hola Mundo" en Solana?. Da clic aquí: 👉 [Ver Ejemplo](https://github.com/WayLearnLatam/Solana-starter-kit/tree/1fc6349ba63375a3fe223d8d56911bc64765459b/build-deploy)
-
-> ℹ️ ¿Cuentas con una Wallet de [Phantom](https://phantom.com/) que deseas importar?, Da clic aquí para ver como hacerlo: 
-
-👉 [Como Importar una Wallet](https://github.com/WayLearnLatam/Solana-starter-kit/tree/1fc6349ba63375a3fe223d8d56911bc64765459b/import-key-a-playground)
+Introducción
+Este proyecto consiste en el desarrollo de un contrato inteligente para administrar una disquera y su colección de discos dentro de una blockchain. El programa fue desarrollado utilizando el lenguaje Rust y el framework Anchor Framework, el cual facilita la creación de contratos inteligentes en la red Solana.
+La idea principal del programa es crear una estructura que permita registrar una disquera y gestionar los discos que pertenecen a ella. A través de diferentes funciones, el sistema permite agregar discos, actualizar su información o eliminarlos cuando sea necesario. Toda esta información se almacena en la blockchain, lo que garantiza que los datos sean seguros, transparentes y difíciles de modificar sin autorización.
+Objetivo del sistema
+El objetivo principal de este sistema es permitir la gestión de un catálogo de discos de manera segura y organizada dentro de una blockchain.
+Para lograrlo, el programa ofrece varias funcionalidades básicas que permiten trabajar con la información de la disquera. Entre ellas se encuentran la creación de una disquera, el registro de nuevos discos, la actualización de información existente y la eliminación de discos que ya no se deseen mantener en el catálogo.
+Además, el sistema incluye mecanismos de validación para asegurar que solo el propietario de la disquera tenga permiso de modificar los registros, evitando cambios no autorizados.
+Funcionamiento general del programa
+El programa funciona mediante diferentes instrucciones que pueden ejecutarse dentro del contrato inteligente. Cada una de estas instrucciones realiza una tarea específica relacionada con la administración de la disquera.
+Cuando el programa se ejecuta por primera vez, se puede crear una nueva disquera proporcionando un nombre. En ese momento se genera un registro dentro de la blockchain que guarda tanto el nombre de la disquera como la identidad del propietario que la creó. También se inicializa una lista vacía donde posteriormente se almacenarán los discos.
+Una vez creada la disquera, el propietario puede comenzar a agregar discos al catálogo. Para registrar un disco se deben proporcionar algunos datos básicos, como el nombre del disco, el nombre del artista y el año de lanzamiento. Antes de guardar esta información, el sistema realiza algunas verificaciones para asegurar que los datos sean válidos y que la persona que intenta hacer la modificación tenga permiso para hacerlo.
+El programa también permite actualizar la información de un disco cuando sea necesario. Esto puede ser útil si se quiere corregir algún dato o modificar información relacionada con el artista o el año de lanzamiento. Para realizar esta actualización, el sistema identifica el disco dentro de la lista y reemplaza sus datos con los nuevos valores proporcionados.
+Otra funcionalidad importante del sistema es la posibilidad de eliminar discos del catálogo. En este caso, el usuario debe indicar cuál disco desea eliminar dentro de la lista. El programa verifica que el disco exista y que el propietario sea quien está realizando la operación antes de eliminar el registro.
+Seguridad y validaciones
+Un aspecto importante del programa es la implementación de diferentes validaciones que ayudan a mantener la integridad de la información.
+Por ejemplo, el sistema verifica que los textos ingresados no sean demasiado largos, lo cual ayuda a evitar problemas de almacenamiento dentro de la blockchain. También se comprueba constantemente que la persona que intenta modificar la información sea el propietario de la disquera.
+Además, el programa incluye verificaciones para evitar errores cuando se intenta acceder a un disco que no existe dentro del catálogo.
+Estas validaciones permiten que el contrato inteligente funcione de manera más segura y confiable.
+Conclusión
+En conclusión, este programa demuestra cómo es posible utilizar contratos inteligentes para administrar información de manera descentralizada. Gracias al uso de Solana, los datos almacenados dentro de la disquera se mantienen seguros y accesibles sin depender de un sistema centralizado.
+El contrato permite realizar operaciones básicas de administración de discos, como agregarlos, actualizarlos o eliminarlos, todo bajo un sistema de permisos que protege la información. Este tipo de aplicaciones muestra el potencial de la tecnología blockchain para crear sistemas de gestión más transparentes y confiables.

@@ -6,18 +6,14 @@ declare_id!("J44idcLntYU7xPmcxX89zCmaPVvLgGtiQ5q1vz1ki4GT");
 pub mod tienda_discos {
     use super::*;
 
-    pub fn crear_disquera(
-        ctx: Context<CrearDisquera>,
-        nombre: String,
-    ) -> Result<()> {
-
+    pub fn crear_disquera(ctx: Context<CrearDisquera>, nombre: String) -> Result<()> {
         require!(nombre.len() <= 50, ErrorCode::TextoMuyLargo);
 
         let disquera = &mut ctx.accounts.disquera;
-
         disquera.nombre = nombre;
         disquera.owner = ctx.accounts.owner.key();
         disquera.discos = Vec::new();
+        disquera.bump = ctx.bumps.disquera; // Guardamos el bump por buena práctica
 
         Ok(())
     }
@@ -28,39 +24,22 @@ pub mod tienda_discos {
         artista: String,
         anio: u16,
     ) -> Result<()> {
-
         require!(nombre.len() <= 50, ErrorCode::TextoMuyLargo);
         require!(artista.len() <= 50, ErrorCode::TextoMuyLargo);
 
         let disquera = &mut ctx.accounts.disquera;
-
-        require!(
-            disquera.owner == ctx.accounts.owner.key(),
-            ErrorCode::NoAutorizado
-        );
-
-        let disco = Disco {
-            nombre,
-            artista,
-            anio,
-        };
-
+        
+        // No es necesario el require de owner aquí porque Anchor ya lo 
+        // valida implícitamente con las seeds en la estructura ModificarDisquera
+        
+        let disco = Disco { nombre, artista, anio };
         disquera.discos.push(disco);
 
         Ok(())
     }
 
-    pub fn eliminar_registro_disco(
-        ctx: Context<ModificarDisquera>,
-        indice: u64,
-    ) -> Result<()> {
-
+    pub fn eliminar_registro_disco(ctx: Context<ModificarDisquera>, indice: u64) -> Result<()> {
         let disquera = &mut ctx.accounts.disquera;
-
-        require!(
-            disquera.owner == ctx.accounts.owner.key(),
-            ErrorCode::NoAutorizado
-        );
 
         require!(
             (indice as usize) < disquera.discos.len(),
@@ -68,7 +47,6 @@ pub mod tienda_discos {
         );
 
         disquera.discos.remove(indice as usize);
-
         Ok(())
     }
 
@@ -79,16 +57,10 @@ pub mod tienda_discos {
         artista: String,
         anio: u16,
     ) -> Result<()> {
-
         require!(nombre.len() <= 50, ErrorCode::TextoMuyLargo);
         require!(artista.len() <= 50, ErrorCode::TextoMuyLargo);
 
         let disquera = &mut ctx.accounts.disquera;
-
-        require!(
-            disquera.owner == ctx.accounts.owner.key(),
-            ErrorCode::NoAutorizado
-        );
 
         require!(
             (indice as usize) < disquera.discos.len(),
@@ -96,7 +68,6 @@ pub mod tienda_discos {
         );
 
         let disco = &mut disquera.discos[indice as usize];
-
         disco.nombre = nombre;
         disco.artista = artista;
         disco.anio = anio;
@@ -107,8 +78,15 @@ pub mod tienda_discos {
 
 #[derive(Accounts)]
 pub struct CrearDisquera<'info> {
-
-    #[account(init, payer = owner, space = 8 + 2000)]
+    #[account(
+        init,
+        payer = owner,
+        // 8 (discriminator) + 4 (string len) + 50 (nombre) + 32 (pubkey) 
+        // + 4 (vec len) + (100 * (4+50 + 4+50 + 2)) (espacio para ~20 discos aprox) + 1 (bump)
+        space = 8 + 60 + 32 + 2000, 
+        seeds = [b"disquera", owner.key().as_ref()],
+        bump
+    )]
     pub disquera: Account<'info, Disquera>,
 
     #[account(mut)]
@@ -119,8 +97,11 @@ pub struct CrearDisquera<'info> {
 
 #[derive(Accounts)]
 pub struct ModificarDisquera<'info> {
-
-    #[account(mut)]
+    #[account(
+        mut,
+        seeds = [b"disquera", owner.key().as_ref()],
+        bump = disquera.bump, // Usamos el bump guardado
+    )]
     pub disquera: Account<'info, Disquera>,
 
     pub owner: Signer<'info>,
@@ -131,6 +112,7 @@ pub struct Disquera {
     pub nombre: String,
     pub owner: Pubkey,
     pub discos: Vec<Disco>,
+    pub bump: u8, // Añadido para mayor seguridad
 }
 
 #[derive(AnchorSerialize, AnchorDeserialize, Clone)]
@@ -142,13 +124,10 @@ pub struct Disco {
 
 #[error_code]
 pub enum ErrorCode {
-
     #[msg("El texto es demasiado largo")]
     TextoMuyLargo,
-
     #[msg("No estas autorizado")]
     NoAutorizado,
-
     #[msg("Indice invalido")]
     IndiceInvalido,
 }
